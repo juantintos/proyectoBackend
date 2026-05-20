@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Exports;
 
 use App\Models\Profile;
+use App\Models\User;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -25,7 +26,12 @@ class ProfilesExport implements
 {
     public function collection()
     {
-        return Profile::withCount('users')->orderBy('created_at', 'desc')->get();
+        return Profile::orderBy('created_at', 'desc')->get()->map(function (Profile $profile) {
+            $profile->users_count = User::where('profile_id', $profile->id)
+                ->whereNull('deleted_at')
+                ->count();
+            return $profile;
+        });
     }
 
     public function title(): string
@@ -35,14 +41,7 @@ class ProfilesExport implements
 
     public function headings(): array
     {
-        return [
-            '#',
-            'Código',
-            'Nombre',
-            'Permisos',
-            'Usuarios asignados',
-            'Fecha de creación',
-        ];
+        return ['#', 'Código', 'Nombre', 'Permisos', 'Usuarios asignados', 'Fecha de creación'];
     }
 
     public function map($profile): array
@@ -50,13 +49,11 @@ class ProfilesExport implements
         static $index = 0;
         $index++;
 
-        $permissions = implode(', ', $profile->permissions ?? []);
-
         return [
             $index,
             $profile->code,
             $profile->name,
-            $permissions ?: '—',
+            implode(', ', $profile->permissions ?? []) ?: '—',
             $profile->users_count ?? 0,
             $profile->created_at?->format('d/m/Y H:i'),
         ];
@@ -64,14 +61,7 @@ class ProfilesExport implements
 
     public function columnWidths(): array
     {
-        return [
-            'A' => 6,
-            'B' => 22,
-            'C' => 25,
-            'D' => 30,
-            'E' => 20,
-            'F' => 20,
-        ];
+        return ['A' => 6, 'B' => 22, 'C' => 25, 'D' => 30, 'E' => 20, 'F' => 20];
     }
 
     public function styles(Worksheet $sheet): array
@@ -79,10 +69,7 @@ class ProfilesExport implements
         return [
             1 => [
                 'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
-                'fill' => [
-                    'fillType'   => Fill::FILL_SOLID,
-                    'startColor' => ['rgb' => '1B5E20'],
-                ],
+                'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '1B5E20']],
                 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER],
             ],
         ];

@@ -21,24 +21,19 @@ class AuthController extends Controller
     public function login(LoginRequest $request): JsonResponse
     {
         $credentials = $request->only('email', 'password');
-
         try {
             $token = JWTAuth::attempt($credentials);
-        } catch (JWTException) {
+        } catch (JWTException $e) {
             return $this->error('No se pudo generar el token.', 500);
         }
-
         if (! $token) {
             return $this->error('Credenciales incorrectas.', 401);
         }
-
         $user = auth()->user();
-
         if (! $user->is_active) {
             JWTAuth::invalidate(JWTAuth::getToken());
             return $this->error('Usuario inactivo.', 403);
         }
-
         return $this->respondWithToken($token, $user);
     }
 
