@@ -51,7 +51,5 @@ snapshot de datos
 comparación de cambios
 trazabilidad completa
 
-📍 API:
-```bash
-http://127.0.0.1:8000/api
-```
+
+<img width="2068" height="2928" alt="diagram" src="https://github.com/user-attachments/assets/046608f4-6245-4408-9721-8a709a05ac32" />
