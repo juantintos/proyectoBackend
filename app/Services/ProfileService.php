@@ -71,8 +71,8 @@ class ProfileService
 
     private function countUsers(string $profileId): int
     {
-        return User::where('profile_id', $profileId)
-            ->whereNull('deleted_at')
-            ->count();
+       return User::where('profile_id', (string) $profileId)
+        ->whereNull('deleted_at')
+        ->count();
     }
 }

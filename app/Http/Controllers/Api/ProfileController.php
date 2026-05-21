@@ -15,6 +15,7 @@ use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use App\Models\User;
 
 class ProfileController extends Controller
 {
@@ -47,11 +48,20 @@ class ProfileController extends Controller
 
     public function show(string $id): JsonResponse
     {
-        $profile = Profile::with('users')->find($id);
+        $profile = Profile::find($id);
 
         if (! $profile) {
-            return $this->notFound('Perfil no encontrado.');
+        return $this->notFound('Perfil no encontrado.');
         }
+
+       $profile->users_count = User::where('profile_id', $profile->id)
+        ->whereNull('deleted_at')
+        ->count();
+
+        $profile->users = User::where('profile_id', $profile->id)
+        ->whereNull('deleted_at')
+        ->get(['name', 'email', 'code'])
+        ->toArray();
 
         return $this->success(new ProfileResource($profile));
     }

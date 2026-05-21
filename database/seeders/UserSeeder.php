@@ -19,10 +19,11 @@ class UserSeeder extends Seeder
 
         // ── Admin principal ──────────────────────────────────────────────────
         User::create([
+            'code'       => 'USR-20250516-G9M8',
             'name'     => 'Administrador Sistema',
             'email'    => 'admin@empresa.com',
             'password' => Hash::make('Admin123'),
-            'phone'    => '+52 312 100 0000',
+            'phone'    => '312 100 0000',
             'profile_id' => (string) $adminProfile->_id,
             'is_active' => true,
         ]);
@@ -30,26 +31,29 @@ class UserSeeder extends Seeder
         // ── Usuarios de prueba ───────────────────────────────────────────────
         $dummyUsers = [
             [
+                 'code'       => 'USR-20250516-H0N9',
                 'name'     => 'Carlos Mendoza',
                 'email'    => 'carlos@empresa.com',
                 'password' => Hash::make('password123'),
-                'phone'    => '+52 312 111 2233',
+                'phone'    => '312 111 2233',
                 'profile_id' => (string) $ventasProfile->_id,
                 'is_active' => true,
             ],
             [
+                 'code'       => 'USR-20250516-I1O0',
                 'name'     => 'Laura Jiménez',
                 'email'    => 'laura@empresa.com',
                 'password' => Hash::make('password123'),
-                'phone'    => '+52 312 444 5566',
+                'phone'    => '312 444 5566',
                 'profile_id' => (string) $rrhhProfile->_id,
                 'is_active' => true, 
             ],
             [
+                'code'       => 'USR-20250516-J2P1',
                 'name'     => 'Miguel Torres',
                 'email'    => 'miguel@empresa.com',
                 'password' => Hash::make('password123'),
-                'phone'    => '+52 312 777 8899',
+                'phone'    => '312 777 8899',
                 'profile_id' => (string) $ventasProfile->_id,
                 'is_active' => true,
             ],
